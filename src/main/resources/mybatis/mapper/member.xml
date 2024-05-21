@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.mycompany.Tget_mini_web.dao.MemberDao">
+
+	<!-- 회원정보 얻기 -->
+	<select id="selectByMid" parameterType="String"
+		resultType="MemberDto">
+		select mid, mname, mpassword, mssn, memail, mrole,
+		mnickname, mprofileimgtype, mprofileimgname,
+		mphone, msince, mprefergenre, mgrade, mprofileimg as mprofileimgdata,
+		mtotalpay
+		from member
+		where mid = #{mid}
+	</select>
+
+	<!-- 회원 더미 집어넣기 테스트 -->
+	<insert id="insertMember" parameterType="MemberDto">
+		insert into member (mid,
+		mname, mpassword, mssn, memail,
+		mphone, msince, mprefergenre, mgrade, mtotalpay, mrole)
+		values(#{mid},
+		#{mname}, #{mpassword}, #{mssn}, #{memail},
+		#{mphone}, #{msince}, #{mprefergenre}, #{mgrade}, #{mtotalpay}, #{mrole})
+	</insert>
+
+	<!-- 회원가입 form DB연동 -->
+	<insert id="insertJoin" parameterType="MemberDto">
+		insert into member (mid,
+		mname, mpassword, mssn, memail, mnickname, mprofileimgtype,
+		mprofileimgname,
+		mphone, msince, mprefergenre, mgrade, mtotalpay, mrole, MPROFILEIMG)
+		values(#{mid}, #{mname}, #{mpassword}, #{mssn}, #{memail},
+		#{mnickname}, #{mprofileImgType}, #{mprofileImgName},
+		#{mphone}, sysdate, #{mprefergenre}, #{mgrade}, #{mtotalpay}, #{mrole},
+		#{mprofileImgData})
+	</insert>
+
+	<!-- 회원의 수 얻기 -->
+	<select id="count" resultType="int">
+		select count(*) from member
+	</select>
+
+	<!-- 회원 수에 따라 페이징 처리하기 -->
+	<select id="selectByPage" parameterType="PagerDto"
+		resultType="MemberDto">
+		<!-- C는 캐릭터를 의미. 문자 그대로의 데이터를 받아들이는 구문 -->
+		<![CDATA[
+			select rnum, mid, mname, memail, mphone, mrole, mgrade
+			from (
+			    select rownum as rnum, mid, mname, memail, mphone, mrole, mgrade
+			    from (
+			        select mid, mname, memail, mphone, mrole, mgrade
+			        from member
+			    )
+			    where rownum <= #{endRowNo}
+			)
+			where rnum >= #{startRowNo}
+		]]>
+	</select>
+
+	<!-- 회원 정보 수정하기 -->
+	<!-- 비밀번호는 어떻게 할 것인지??** -->
+	<update id="updateMember" parameterType="MemberDto">
+		update member set
+		mpassword = #{mpassword},
+		memail = #{memail},
+		mphone = #{mphone}
+		where mid = #{mid}
+	</update>
+
+	<!-- 회원 삭제 -->
+	<delete id="deleteByMid" parameterType="String">
+		delete
+		from member
+		where mid = #{mid}
+	</delete>
+
+	<!-- 회원가입 할 아이디가 중복값인지 int으로 가져오기 -->
+	<select id="selectByMidIsUnique" parameterType="String"
+		resultType="int">
+		select COUNT(mid)
+		from member
+		where mid = #{mid}
+	</select>
+
+	<!-- 회원가입 할 주민번호가 중복값인지 int으로 가져오기 -->
+	<select id="selectByMssnIsUnique" parameterType="String"
+		resultType="int">
+		select COUNT(mssn)
+		from member
+		where mssn = #{mssn}
+	</select>
+
+	<!-- 회원가입 할 휴대폰 번호가 중복값인지 int으로 가져오기 -->
+	<select id="selectByMphoneIsUnique" parameterType="String"
+		resultType="int">
+		select COUNT(mphone)
+		from member
+		where mphone = #{mphone}
+	</select>
+
+	<!-- 회원가입 할 휴대폰 번호가 중복값인지 int으로 가져오기 -->
+	<select id="selectByMnicknameIsUnique" parameterType="String"
+		resultType="int">
+		select COUNT(mnickname)
+		from member
+		where mnickname =
+		#{mnickname}
+	</select>
+
+	<!--아이디 찾기 기능 -->
+	<select id="findId" parameterType="MemberDto"
+		resultType="String">
+
+		select mid
+		from member
+		where mname = #{mname}
+		and mssn=#{mssn}
+		and mphone=#{mphone}
+	</select>
+	
+	<!--비밀번호 찾기 기능  -->
+	<select id="findPw" parameterType="MemberDto" resultType="String">
+	
+		select mpassword
+		from member
+		where mid = #{mid}
+		and mssn=#{mssn}
+	</select>
+	
+	<!-- 비밀번호 찾기에서 새비밀번호 정보변경 -->
+	<update id="ChangePw" parameterType="MemberDto">
+		update member 
+		set
+		mpassword=#{mpassword}
+		where mid= #{mid}
+	</update>	
+	
+	<!-- 회원정보 얻기 (이미지 정보 없음)-->
+	<!--<select id="selectMemberByMidNoImg" parameterType="String" resultType="MemberDto">
+		select mid, mname, mpassword, mssn, memail, mrole, mnickname, 
+			mphone, msince, mprefergenre, mgrade, mtotalpay
+		from member
+		where mid = #{mid}
+	</select> -->
+	
+	<!-- 회원정보 얻기 (이미지만)-->
+	<select id="selectImgByMid" parameterType="String" resultType="MemberDto">
+		select mprofileimgtype, mprofileimgname, mprofileimg as mprofileimgdata
+		from member
+		where mid = #{mid}
+	</select>
+	
+	<!-- memberInfoModify에서 비밀번호 변경하기 -->
+ 	<update id="updateMpassword" parameterType="MemberDto">
+		update member set
+			mpassword = #{mpassword}
+		where mid = #{mid}
+	</update>
+	
+	<!-- memberInfoModify에서 닉네임 변경하기 -->
+ 	<update id="updateMnickname" parameterType="MemberDto">
+		update member set
+			mnickname = #{mnickname}
+		where mid = #{mid}
+	</update>
+	
+	<!-- memberInfoModify에서 이메일 변경하기 -->
+ 	<update id="updateMemail" parameterType="MemberDto">
+		update member set
+			memail = #{memail}
+		where mid = #{mid}
+	</update>
+	
+	<!-- memberInfoModify에서 휴대폰 번호 변경하기 -->
+ 	<update id="updateMphone" parameterType="MemberDto">
+		update member set
+			mphone = #{mphone}
+		where mid = #{mid}
+	</update>
+	
+	<!-- memberInfoModify에서 이미지 정보 변경하기 -->
+ 	<update id="updateMprofileImg" parameterType="MemberDto">
+		update member set
+			mprofileimg = #{mprofileImgData},
+			mprofileimgtype = #{mprofileImgType}, 
+			mprofileimgname = #{mprofileImgName}
+		where mid = #{mid}
+	</update>
+	<!-- 게시글 확인하기 -->
+	<select id="selectBoard" parameterType="String" resultType="BoardDto">
+	select bno,btitle,bcontent,mid,bdate,bhitcount
+	from board 
+	where mid=#{mid}	
+	</select>
+
+	
+	
+</mapper>

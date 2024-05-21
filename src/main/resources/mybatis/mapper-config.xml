@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<!-- name은 마이바티스에서 찾아보고 지정해주었다. -->
+		<setting name="jdbcTypeForNull" value="NULL"/>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+	<!-- insert into 문 개선하기위해 -->
+	<typeAliases>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.AdminDto" alias="AdminDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.BoardDto" alias="BoardDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.CartDto" alias="CartDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.MemberDto" alias="MemberDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.OrderDetailDto" alias="OrderDetailDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.OrderInfoDto" alias="OrderInfoDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.ProductDto" alias="ProductDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.ReviewDto" alias="ReviewDto"/>
+		<typeAlias type="com.mycompany.Tget_mini_web.dto.PagerDto" alias="PagerDto"/>
+	</typeAliases>
+</configuration>
